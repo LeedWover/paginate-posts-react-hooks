@@ -1,11 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Navbar from './components/Header'
+import Navbar from "./components/Header";
 import Spinner from "./components/utils/Spinner";
 
 export default () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState({
+    start: 0,
+    limit: 5
+  });
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 
@@ -13,9 +16,18 @@ export default () => {
     getData();
   }, [count]);
 
-  const url = `http://jsonplaceholder.typicode.com/posts?_start=${count}&_limit=5`;
+  const url = `http://jsonplaceholder.typicode.com/posts?_start=${
+    count.start
+  }&_limit=${count.limit}`;
 
-  const getData = () => {
+  const getData = async () => {
+    if (count.start < 0) {
+      setCount({
+        ...count,
+        start: 0
+      });
+    }
+
     fetch(url)
       .then(response => {
         return response.json();
@@ -24,6 +36,13 @@ export default () => {
         setPosts(data);
         setLoading(false);
       });
+  };
+
+  const handleChange = event => {
+    setCount({
+      ...count,
+      limit: event.target.value
+    });
   };
 
   const showPosts = posts.map(post => {
@@ -39,18 +58,22 @@ export default () => {
       </Fragment>
     );
   });
-  console.log(posts);
   console.log(count);
 
   const backButton =
-    count <= 0 ? (
+    count.start <= 0 ? (
       <button className="btn btn-dark float-left" disabled>
         back
       </button>
     ) : (
       <button
         className="btn btn-dark float-left"
-        onClick={() => setCount(count - 5)}
+        onClick={() =>
+          setCount({
+            ...count,
+            start: Number(count.start) - Number(count.limit)
+          })
+        }
       >
         back
       </button>
@@ -65,14 +88,36 @@ export default () => {
   ) : (
     <div className="container">
       {showPosts}
-      {backButton}
-
-      <button
-        className="btn btn-dark float-right"
-        onClick={() => setCount(count + 5)}
-      >
-        next
-      </button>
+      <div className="row">
+        <div className="col-2">{backButton}</div>
+        <form className="col-8">
+          <div className="form-group">
+            <select
+              value={count.limit}
+              onChange={handleChange}
+              className="form-control"
+              id="sel1"
+            >
+              <option value={5}>5 Posts</option>
+              <option value={10}>10 Posts</option>
+              <option value={15}>15 Posts</option>
+            </select>
+          </div>
+        </form>
+        <div className="col-2">
+          <button
+            className="btn btn-dark float-right"
+            onClick={() =>
+              setCount({
+                ...count,
+                start: Number(count.start) + Number(count.limit)
+              })
+            }
+          >
+            next
+          </button>
+        </div>
+      </div>
     </div>
   );
   return (
