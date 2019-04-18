@@ -16,9 +16,7 @@ export default () => {
     getData();
   }, [count]);
 
-  const url = `http://jsonplaceholder.typicode.com/posts?_start=${
-    count.start
-  }&_limit=${count.limit}`;
+  const url = `http://jsonplaceholder.typicode.com/posts?_start=${count.start}&_limit=${count.limit}`;
 
   const getData = async () => {
     if (count.start < 0) {
@@ -28,14 +26,10 @@ export default () => {
       });
     }
 
-    fetch(url)
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        setPosts(data);
-        setLoading(false);
-      });
+    const response = await fetch(url);
+    const posts = await response.json();
+    setPosts(posts);
+    setLoading(false);
   };
 
   const handleChange = event => {
@@ -88,7 +82,7 @@ export default () => {
   ) : (
     <div className="container">
       {showPosts}
-      <div className="row">
+      <div className="row my-5">
         <div className="col-2">{backButton}</div>
         <form className="col-8">
           <div className="form-group">
