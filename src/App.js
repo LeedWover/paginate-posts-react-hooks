@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./app.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default () => {
   const [count, setCount] = useState(0);
@@ -9,7 +9,7 @@ export default () => {
     getData();
   }, [count]);
 
-  const url = `http://jsonplaceholder.typicode.com/posts?_start=${count}&_limit=5`
+  const url = `http://jsonplaceholder.typicode.com/posts?_start=${count}&_limit=5`;
 
   const getData = async () => {
     const response = await fetch(url);
@@ -17,20 +17,33 @@ export default () => {
     setPosts(data);
   };
 
-  const showPosts = posts.map((post) => {
+  const showPosts = posts.map(post => {
     return (
-      <div>
-        <div>{post.title}</div>
+      <div className="media m-3">
+        <div className="media-body">
+          <h5 className="mt-0">{post.title}</h5>
+          {post.body}
+        </div>
       </div>
-    )
+    );
   });
-  console.log(posts)
-  console.log(count)
+  console.log(posts);
+  console.log(count);
   return (
-    <div>
+    <div className="container">
       {showPosts}
-      <button onClick={() => count > 0 ? setCount(count - 5) : null}>back</button>
-      <button onClick={() => setCount(count + 5)}>next</button>
+      <button
+        className="btn btn-primary float-left"
+        onClick={() => (count > 0 ? setCount(count - 5) : null)}
+      >
+        back
+      </button>
+      <button
+        className="btn btn-primary float-right"
+        onClick={() => setCount(count + 5)}
+      >
+        next
+      </button>
     </div>
   );
 };
