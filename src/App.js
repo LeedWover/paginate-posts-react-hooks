@@ -1,28 +1,36 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./app.css";
 
-class App extends Component {
-  render() {
+export default () => {
+  const [count, setCount] = useState(0);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, [count]);
+
+  const url = `http://jsonplaceholder.typicode.com/posts?_start=${count}&_limit=5`
+
+  const getData = async () => {
+    const response = await fetch(url);
+    const data = await response.json();
+    setPosts(data);
+  };
+
+  const showPosts = posts.map((post) => {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <div>{post.title}</div>
       </div>
-    );
-  }
-}
-
-export default App;
+    )
+  });
+  console.log(posts)
+  console.log(count)
+  return (
+    <div>
+      {showPosts}
+      <button onClick={() => count > 0 ? setCount(count - 5) : null}>back</button>
+      <button onClick={() => setCount(count + 5)}>next</button>
+    </div>
+  );
+};
