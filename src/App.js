@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default () => {
@@ -19,25 +19,44 @@ export default () => {
 
   const showPosts = posts.map(post => {
     return (
-      <div className="media m-3">
-        <div className="media-body">
-          <h5 className="mt-0">{post.title}</h5>
-          {post.body}
+      <Fragment key={post.id}>
+        <div className="media m-3">
+          <div className="media-body">
+            <h5 className="mt-0">{post.title}</h5>
+            {post.body}
+          </div>
+          
         </div>
-      </div>
+        <hr />
+      </Fragment>
     );
   });
   console.log(posts);
   console.log(count);
-  return (
-    <div className="container">
-      {showPosts}
+
+
+  const backButton =
+    count <= 0 ?
+    (
+      <button className="btn btn-primary float-left" disabled>
+        back
+      </button>
+    )
+    :
+    (
       <button
         className="btn btn-primary float-left"
-        onClick={() => (count > 0 ? setCount(count - 5) : null)}
+        onClick={() => setCount(count - 5)}
       >
         back
       </button>
+    )
+
+  return (
+    <div className="container">
+      {showPosts}
+      {backButton}
+      
       <button
         className="btn btn-primary float-right"
         onClick={() => setCount(count + 5)}
